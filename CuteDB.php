@@ -138,10 +138,13 @@ class CuteDB
     private function getIndexOffset($key)
     {
         $hash = crc32($key);
+        if ($hash > 0x7FFFFFFF)
+        {
+            $hash = 0x100000000 - $hash;
+        }
         if ($hash < 0) { /* 32bit system may be return negative */
             $hash = -$hash;
         }
-
         $index = $hash % CuteDB::CUTEDB_ENTRIES;
 
         return CuteDB::CUTEDB_HEADER_SIZE + $index * 4;
